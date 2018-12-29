@@ -1,5 +1,5 @@
 const database = require('../database/database.js');
-const conditionRouter = require('../condition/condition-router');
+const conditionUtil = require('../condition/condition-util');
 
 const timeoutQueue = [];
 const scheduleQueue = [];
@@ -54,9 +54,9 @@ exports.refresh = async function (thumbId, condition, changedValue) {
         clearTimeout(timeout);
     }
 
-    const result = await conditionRouter.determineScheduleDelayMillis(condition, changedValue);
+    const result = await conditionUtil.determineScheduleDelayMillis(condition, changedValue); // TODO error handling
 
-    schedule.timeout = result[0];
+    schedule.timeout = currentMillis() + result[0];
     schedule.value = result[1];
 
     await exports.put(schedule);

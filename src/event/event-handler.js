@@ -1,8 +1,8 @@
 const database = require('../database/database.js');
-const queue = require('../schedule/schedule.js');
-const conditionRouter = require('../condition/condition-router');
+const schedule = require('../schedule/schedule.js');
+const conditionUtil = require('../condition/condition-util');
 
-exports.handleEvent = async function(thumbId, event) {
+exports.handleEvent = async function (thumbId, event) {
     const eventName = event['event'];
 
     if (eventName.charAt(0) === '$') {
@@ -29,7 +29,7 @@ async function handleUserEvent(thumbId, event) {
     const queryList = [];
 
     // Update thumb object value with policy
-    for(let i = 0; i < policies.length; i++) {
+    for (let i = 0; i < policies.length; i++) {
         const policy = policies[i];
 
         const condition = policy['condition'];
@@ -39,8 +39,8 @@ async function handleUserEvent(thumbId, event) {
 
         const nowValue = thumb[condition];
 
-        if (start<= nowValue && nowValue <= end) {
-            const func = new Function("value", funcString);
+        if (start <= nowValue && nowValue <= end) {
+            const func = new Function('value', funcString);
             const nextValue = func(nowValue);
             thumb[condition] = nextValue;
             queryList.push(`${condition}=${nextValue}`);
@@ -58,34 +58,40 @@ async function handleUserEvent(thumbId, event) {
         const condition = queryList[i].split('=')[0];
         const value = parseInt(queryList[i].split('=')[1]);
 
-        await queue.refresh(thumbId, condition, value);
+        await schedule.refresh(thumbId, condition, value);
     }
 
     const affectionValue = thumb['affection'];
     const healthValue = thumb['health'];
     const hygieneValue = thumb['hygiene'];
     const satietyValue = thumb['satiety'];
+
+    const affectionLabel = await conditionUtil.valueToLabel('affection', affectionValue);
+    const healthLabel = await conditionUtil.valueToLabel('health', healthValue);
+    const hygieneLabel = await conditionUtil.valueToLabel('hygiene', hygieneValue);
+    const satietyLabel = await conditionUtil.valueToLabel('satiety', satietyValue);
+
     return {
-        "character": {
-            "attires": [],
-            "characterImageUrl": ""
+        'character': {
+            'attires': [],
+            'characterImageUrl': ''
         },
-        "condition": {
-            "affection": {
-                "label": conditionRouter.valueToLabel('affection', affectionValue),
-                "value": affectionValue
+        'condition': {
+            'affection': {
+                'label': affectionLabel,
+                'value': affectionValue
             },
-            "health": {
-                "label": conditionRouter.valueToLabel('health', healthValue),
-                "value": healthValue
+            'health': {
+                'label': healthLabel,
+                'value': healthValue
             },
-            "hygiene": {
-                "label": conditionRouter.valueToLabel('hygiene', hygieneValue),
-                "value": hygieneValue
+            'hygiene': {
+                'label': hygieneLabel,
+                'value': hygieneValue
             },
-            "satiety": {
-                "label": conditionRouter.valueToLabel('satiety', satietyValue),
-                "value": satietyValue
+            'satiety': {
+                'label': satietyLabel,
+                'value': satietyValue
             }
         }
     };
