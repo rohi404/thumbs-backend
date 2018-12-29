@@ -1,0 +1,29 @@
+{
+    "name": "thumbs-backend",
+    "version": "1.0.0",
+    "description": ".",
+    "main": "src/app.js",
+    "directories": {
+        "example": "example"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "apidoc": "apidoc -o apidoc/ -e node_modules/"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/thumbs-project/thumbs-backend.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/thumbs-project/thumbs-backend/issues"
+    },
+    "homepage": "https://github.com/thumbs-project/thumbs-backend#readme",
+    "dependencies": {
+        "express": "^4.16.4",
+        "http-errors": "^1.7.1",
+        "morgan": "^1.9.1",
+        "mysql": "^2.16.0"
+    }
+}
