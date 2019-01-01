@@ -1,8 +1,7 @@
-const express = require('express');
-const createError = require('http-errors');
-const router = express.Router({ mergeParams: true });
+import { Router, Request, Response } from 'express';
+const router = Router({ mergeParams: true });
 
-const eventHandler = require('../src/event/event-handler.js');
+import * as eventHandler from '../event/event-handler';
 
 /**
  * @api {post} /thumbs/:thumbId/event Post User Event
@@ -28,7 +27,7 @@ const eventHandler = require('../src/event/event-handler.js');
  *
  * @apiUse ThumbState
  */
-router.post('/', function (req, res, next) {
+router.post('/', function (req: Request, res: Response, next) {
     const thumbId = req.params['thumbId'];
     const event = req.body;
 
@@ -40,4 +39,4 @@ router.post('/', function (req, res, next) {
     });
 });
 
-module.exports = router;
+export const EventController: Router = router;

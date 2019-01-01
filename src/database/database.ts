@@ -1,11 +1,11 @@
-const mysql = require('mysql');
-const credentials = require('../../credentials.js');
+import * as mysql from 'mysql';
+import * as credentials from '../credentials';
 
-function createConnection() {
+export const createConnection = function() {
     return mysql.createConnection(credentials.mysqlConfig);
-}
+};
 
-function query(conn, sql) {
+export const query = function(conn, sql): Promise<any> {
     return new Promise(function (resolve, reject) {
         conn.query(sql, [], function (err, results, fields) {
             if (err) {
@@ -16,19 +16,15 @@ function query(conn, sql) {
             }
         });
     });
-}
+};
 
-function endConnection(conn) {
+export const endConnection = function (conn) {
     conn.end();
-}
+};
 
-exports.queryOne = async function (sql) {
+export const queryOne = async function (sql) {
     const conn = createConnection();
     const results = await query(conn, sql);
     endConnection(conn);
     return results;
 };
-
-exports.createConnection = createConnection;
-exports.query = query;
-exports.endConnection = endConnection;

@@ -1,13 +1,13 @@
-const express = require('express');
-const createError = require('http-errors');
-const router = express.Router({ mergeParams: true });
+import createError from 'http-errors';
+import { Router, Request, Response } from 'express';
+const router = Router({ mergeParams: true });
 
 /**
  * @api {post} /thumbs Create Thumb
  * @apiName CreateThumb
  * @apiGroup Thumb
  */
-router.post('/', function (req, res, next) {
+router.post('/', function (req: Request, res: Response, next) {
     next(createError(500, 'Not Yet Implemented'));
 });
 
@@ -16,7 +16,7 @@ router.post('/', function (req, res, next) {
  * @apiName listThumb
  * @apiGroup Thumb
  */
-router.get('/', function (req, res, next) {
+router.get('/', function (req: Request, res: Response, next) {
     next(createError(500, 'Not Yet Implemented'));
 });
 
@@ -25,7 +25,7 @@ router.get('/', function (req, res, next) {
  * @apiName getThumb
  * @apiGroup Thumb
  */
-router.get('/:thumbId', function (req, res, next) {
+router.get('/:thumbId', function (req: Request, res: Response, next) {
     next(createError(500, 'Not Yet Implemented'));
 });
 
@@ -34,7 +34,7 @@ router.get('/:thumbId', function (req, res, next) {
  * @apiName modifyThumb
  * @apiGroup Thumb
  */
-router.put('/:thumbId', function (req, res, next) {
+router.put('/:thumbId', function (req: Request, res: Response, next) {
     next(createError(500, 'Not Yet Implemented'));
 });
 
@@ -43,8 +43,8 @@ router.put('/:thumbId', function (req, res, next) {
  * @apiName deleteThumb
  * @apiGroup Thumb
  */
-router.delete('/:thumbId', function (req, res, next) {
+router.delete('/:thumbId', function (req: Request, res: Response, next) {
     next(createError(500, 'Not Yet Implemented'));
 });
 
-module.exports = router;
+export const ThumbController: Router = router;

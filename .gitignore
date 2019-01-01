@@ -1,6 +1,9 @@
 .idea/
-credentials.js
+credentials.ts
 apidoc/
+
+### Typescript ###
+dist/
 
 # Created by https://www.gitignore.io/api/node,macos,webstorm+iml
 # Edit at https://www.gitignore.io/?templates=node,macos,webstorm+iml

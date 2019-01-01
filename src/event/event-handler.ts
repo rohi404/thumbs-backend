@@ -1,8 +1,8 @@
-const database = require('../database/database.js');
-const schedule = require('../schedule/schedule.js');
-const conditionUtil = require('../condition/condition-util');
+import * as database from '../database/database';
+import * as schedule from '../schedule/schedule';
+import * as conditionUtil from '../condition/condition-util';
 
-exports.handleEvent = async function (thumbId, event) {
+export const handleEvent = async function (thumbId, event) {
     const eventName = event['event'];
 
     if (eventName.charAt(0) === '$') {

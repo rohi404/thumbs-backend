@@ -1,13 +1,13 @@
-const express = require('express');
-const createError = require('http-errors');
-const router = express.Router({ mergeParams: true });
+import createError from 'http-errors';
+import { Router, Request, Response } from 'express';
+const router = Router({ mergeParams: true });
 
 /**
  * @api {post} /users Create User
  * @apiName CreateUser
  * @apiGroup User
  */
-router.post('/', function (req, res, next) {
+router.post('/', function (req: Request, res: Response, next) {
     next(createError(500, 'Not Yet Implemented'));
 });
 
@@ -16,7 +16,7 @@ router.post('/', function (req, res, next) {
  * @apiName GetUser
  * @apiGroup User
  */
-router.get('/:userId', function (req, res, next) {
+router.get('/:userId', function (req: Request, res: Response, next) {
     next(createError(500, 'Not Yet Implemented'));
 });
 
@@ -25,7 +25,7 @@ router.get('/:userId', function (req, res, next) {
  * @apiName ModifyUser
  * @apiGroup User
  */
-router.put('/:userId', function (req, res, next) {
+router.put('/:userId', function (req: Request, res: Response, next) {
     next(createError(500, 'Not Yet Implemented'));
 });
 
@@ -34,8 +34,8 @@ router.put('/:userId', function (req, res, next) {
  * @apiName DeleteUser
  * @apiGroup User
  */
-router.delete('/:userId', function (req, res, next) {
+router.delete('/:userId', function (req: Request, res: Response, next) {
     next(createError(500, 'Not Yet Implemented'));
 });
 
-module.exports = router;
+export const UserController: Router = router;

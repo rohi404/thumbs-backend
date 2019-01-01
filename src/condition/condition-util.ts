@@ -1,6 +1,6 @@
-const database = require('../database/database');
+import * as database from '../database/database';
 
-exports.valueToLabel = async function (condition, value) {
+export const valueToLabel = async function (condition, value) {
     const sql = `SELECT * FROM PolicyConditionLabel WHERE \`condition\` LIKE '${condition}'`;
     const policies = await database.queryOne(sql);
 
@@ -19,7 +19,7 @@ exports.valueToLabel = async function (condition, value) {
     return null;
 };
 
-exports.determineScheduleDelayMillis = async function (condition, nowValue) {
+export const determineScheduleDelayMillis = async function (condition, nowValue) {
     const sql = `SELECT * FROM PolicyConditionDecrement WHERE \`condition\` LIKE '${condition}'`;
     const policies = await database.queryOne(sql);
 

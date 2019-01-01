@@ -1,5 +1,5 @@
-const database = require('../database/database.js');
-const conditionUtil = require('../condition/condition-util');
+import * as database from '../database/database';
+import * as conditionUtil from '../condition/condition-util';
 
 const timeoutQueue = [];
 const scheduleQueue = [];
@@ -9,15 +9,20 @@ function currentMillis() {
 }
 
 class Schedule {
-    constructor(thumbId, timeout, conditionName, changedValue) {
+    thumbId: number;
+    timeout: number;
+    condition: string;
+    value: number;
+
+    constructor(thumbId, timeout, condition, value) {
         this.thumbId = thumbId;
         this.timeout = timeout;
-        this.condition = conditionName;
-        this.value = changedValue;
+        this.condition = condition;
+        this.value = value;
     }
 }
 
-exports.loadQueue = async function () {
+export const loadQueue = async function () {
     const sql = 'SELECT * FROM Schedules';
 
     const results = await database.queryOne(sql);
@@ -32,7 +37,7 @@ exports.loadQueue = async function () {
     }
 };
 
-exports.refresh = async function (thumbId, condition, changedValue) {
+export const refresh = async function (thumbId, condition, changedValue) {
     const index = scheduleQueue.findIndex(function(schedule) {
         const sameThumbId = parseInt(schedule.thumbId) === thumbId;
         const sameCondition = schedule.condition === condition;
@@ -62,7 +67,7 @@ exports.refresh = async function (thumbId, condition, changedValue) {
     await exports.put(schedule);
 };
 
-exports.put = async function (schedule) {
+export const put = async function (schedule) {
     const sql =
         `INSERT INTO Schedules (thumb_id, timeout, \`condition\`, \`value\`) ` +
         `VALUES (${schedule.thumbId}, ${schedule.timeout}, '${schedule.condition}', ${schedule.value})`;
@@ -78,17 +83,17 @@ exports.put = async function (schedule) {
 function timeoutFunction(schedule) {
     console.log(schedule);
 
-    const sql =
+    const sql1 =
         `DELETE FROM Schedules WHERE ` +
         `thumb_id = ${schedule.thumbId} && ` +
         `\`condition\` = '${schedule.condition}'`;
 
     const sql2 = `UPDATE Thumbs SET ${schedule.condition}=${schedule.value} WHERE thumb_id=${schedule.thumbId}`;
 
-    database.queryOne(sql)
-        .then(database.queryOne(sql2))
+    database.queryOne(sql1)
+        .then(() => database.queryOne(sql2))
         .then((success) => {
-            console.log('Done')
+            console.log('timeoutFunction')
         })
         .catch((error) => {
             console.error(error);
