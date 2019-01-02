@@ -31,7 +31,7 @@ export const determineScheduleDelayMillis = async function (condition, nowValue)
         const delayFuncStr = policy['delay_func'];
         const valueFuncStr = policy['value_func'];
 
-        if (rangeStart <= nowValue && nowValue <= rangeEnd) {
+        if (rangeStart < nowValue && nowValue <= rangeEnd) {
             const delayFunc = new Function("value", delayFuncStr);
             const valueFunc = new Function("value", valueFuncStr);
 
