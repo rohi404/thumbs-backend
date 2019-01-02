@@ -1,6 +1,7 @@
 .idea/
 credentials.ts
 apidoc/
+FirebaseServiceAccountKey.json
 
 ### Typescript ###
 dist/

@@ -7,7 +7,9 @@ import { AddressInfo } from "net";
 import { UserController } from "./routes/users";
 import { ThumbController } from "./routes/thumbs";
 import { EventController } from "./routes/events";
+import { TestController } from "./routes/test";
 import { loadQueue } from './schedule/schedule';
+import * as Messaging from "./messaging/messaging";
 
 // App Settings
 const app = express();
@@ -19,6 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/", express.static("./apidoc"));
 app.use("/users", UserController);
 app.use("/thumbs/", ThumbController);
+app.use("/test/", TestController);
 app.use("/thumbs/:thumbId/event", EventController);
 app.use(function (req, res, next) {
     next(createError(404));
@@ -39,6 +42,8 @@ const server = app.listen(3000, function () {
     loadQueue().then(() => {
         console.log("Successfully load schedules");
     });
+
+    Messaging.init();
 });
 
 /**
