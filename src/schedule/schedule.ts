@@ -64,7 +64,7 @@ export const refresh = async function (thumbId, condition, changedValue) {
     schedule.timeout = currentMillis() + result[0];
     schedule.value = result[1];
 
-    await exports.put(schedule);
+    await put(schedule);
 };
 
 export const put = async function (schedule) {
@@ -80,7 +80,7 @@ export const put = async function (schedule) {
     scheduleQueue.push(schedule);
 };
 
-function timeoutFunction(schedule) {
+async function timeoutFunction(schedule) {
     console.log(schedule);
 
     const sql1 =
@@ -98,4 +98,18 @@ function timeoutFunction(schedule) {
         .catch((error) => {
             console.error(error);
         })
+
+
+    if(schedule.value === 0){
+        //
+    }
+
+    else {
+        const result = await conditionUtil.determineScheduleDelayMillis(schedule.condition, schedule.value); // TODO error handling
+
+        schedule.timeout = currentMillis() + result[0];
+        schedule.value = result[1];
+
+        await put(schedule);
+    }
 }
