@@ -36,7 +36,7 @@ app.use(function (err, req, res, next) {
     });
 });
 
-const server = app.listen(3000, function () {
+const server = app.listen(3456, function () {
     const port = server.address() as AddressInfo;
     console.log("Express server listening on port " + port.port);
     loadQueue().then(() => {
