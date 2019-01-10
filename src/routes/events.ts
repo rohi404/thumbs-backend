@@ -12,9 +12,35 @@ import * as eventHandler from '../utils/event-handler';
  * @apiParam {Json} body body.
  * @apiParamExample {json} User Action:
  * {
- *   "requestId": 12345678,
- *   "event": "TOUCH | CURE | CLEAN | EAT | UNDO_TOUCH | UNDO_CURE | UNDO_CLEAN | UNDO_EAT",
- *   "payload": {}
+ *     "requestId": 12345678,
+ *     "event": "TOUCH | CURE | CLEAN | EAT | UNDO_TOUCH | UNDO_CURE | UNDO_CLEAN | UNDO_EAT",
+ *     "payload": {}
+ * }
+ *
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *     "requestId": 12345678,
+ *     "thumbId": 1,
+ *     "name": "귀요미",
+ *     "condition": {
+ *         "affection": {
+ *             "label": "normal",
+ *             "value": 30
+ *         },
+ *         "health": {
+ *             "label": "low",
+ *             "value": 0
+ *         },
+ *         "hygiene": {
+ *             "label": "high",
+ *             "value": 70
+ *         },
+ *         "satiety": {
+ *             "label": "low",
+ *             "value": 0
+ *         }
+ *     }
  * }
  */
 router.post('/', function (req: Request, res: Response, next) {
