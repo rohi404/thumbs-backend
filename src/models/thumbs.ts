@@ -1,5 +1,4 @@
-import { valueToLabel } from "../utils/policy";
-import * as database from "../database/database";
+import { extractLabelFunc } from "../utils/policy";
 
 export interface ThumbResult {
     thumb_id: number,
@@ -86,24 +85,26 @@ export interface ThumbCondition {
 }
 
 export const convert = async function (result: ThumbResult) {
+    const valueToLabel = await extractLabelFunc();
+
     return {
         thumbId: result["thumb_id"],
         name: result["name"],
         condition: {
             affection: {
-                label: await valueToLabel("affection", result["affection"]),
+                label: valueToLabel("affection", result["affection"]),
                 value: result["affection"]
             },
             health: {
-                label: await valueToLabel("health", result["health"]),
+                label: valueToLabel("health", result["health"]),
                 value: result["health"]
             },
             hygiene: {
-                label: await valueToLabel("hygiene", result["hygiene"]),
+                label: valueToLabel("hygiene", result["hygiene"]),
                 value: result["hygiene"]
             },
             satiety: {
-                label: await valueToLabel("satiety", result["satiety"]),
+                label: valueToLabel("satiety", result["satiety"]),
                 value: result["satiety"]
             }
         }

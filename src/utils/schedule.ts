@@ -1,5 +1,6 @@
-import * as database from '../database/database';
-import * as conditionUtil from './policy';
+import * as database from "../database/database";
+import * as conditionUtil from "./policy";
+import { extractScheduleFunc } from "./policy";
 
 const timeoutQueue = [];
 const scheduleQueue = [];
@@ -23,12 +24,12 @@ class Schedule {
 }
 
 export const loadQueue = async function () {
-    const sql = 'SELECT * FROM Schedules';
+    const sql = "SELECT * FROM Schedules";
 
     const results = await database.queryOne(sql);
 
     for (let i = 0; i < results.length; i++) {
-        const schedule = new Schedule(results[i]['thumb_id'], results[i]['timeout'], results[i]['condition'], results[i]['value']);
+        const schedule = new Schedule(results[i]["thumb_id"], results[i]["timeout"], results[i]["condition"], results[i]["value"]);
         const delayMillis = schedule.timeout - currentMillis();
         const timeout = setTimeout(timeoutFunction, delayMillis, schedule);
 
@@ -38,7 +39,7 @@ export const loadQueue = async function () {
 };
 
 export const refresh = async function (thumbId, condition, changedValue) {
-    const index = scheduleQueue.findIndex(function(schedule) {
+    const index = scheduleQueue.findIndex(function (schedule) {
         const sameThumbId = parseInt(schedule.thumbId) === thumbId;
         const sameCondition = schedule.condition === condition;
 
@@ -59,12 +60,14 @@ export const refresh = async function (thumbId, condition, changedValue) {
         clearTimeout(timeout);
     }
 
-    const result = await conditionUtil.determineScheduleDelayMillis(condition, changedValue); // TODO error handling
+    const calcDelayAndValue = await extractScheduleFunc();
+    const result = calcDelayAndValue(condition, changedValue);
 
-    schedule.timeout = currentMillis() + result[0];
-    schedule.value = result[1];
-
-    await put(schedule);
+    if (result != null) {
+        schedule.timeout = currentMillis() + result[0];
+        schedule.value = result[1];
+        await put(schedule);
+    }
 };
 
 export const put = async function (schedule) {
@@ -72,7 +75,7 @@ export const put = async function (schedule) {
         `INSERT INTO Schedules (thumb_id, timeout, \`condition\`, \`value\`) ` +
         `VALUES (${schedule.thumbId}, ${schedule.timeout}, '${schedule.condition}', ${schedule.value})`;
 
-    const success = await database.queryOne(sql); // TODO error handling
+    await database.queryOne(sql);
     const delayMillis = schedule.timeout - currentMillis();
     const timeout = setTimeout(timeoutFunction, delayMillis, schedule);
 
@@ -81,35 +84,20 @@ export const put = async function (schedule) {
 };
 
 async function timeoutFunction(schedule) {
-    console.log(schedule);
-
-    const sql1 =
-        `DELETE FROM Schedules WHERE ` +
-        `thumb_id = ${schedule.thumbId} && ` +
-        `\`condition\` = '${schedule.condition}'`;
+    const sql1 = `DELETE FROM Schedules WHERE thumb_id = ${schedule.thumbId} && \`condition\` LIKE '${schedule.condition}'`;
+    await database.queryOne(sql1);
 
     const sql2 = `UPDATE Thumbs SET ${schedule.condition}=${schedule.value} WHERE thumb_id=${schedule.thumbId}`;
+    await database.queryOne(sql2);
 
-    database.queryOne(sql1)
-        .then(() => database.queryOne(sql2))
-        .then((success) => {
-            console.log('timeoutFunction')
-        })
-        .catch((error) => {
-            console.error(error);
-        })
+    if (schedule.value != 0) {
+        const calcDelayAndValue = await extractScheduleFunc();
+        const result = calcDelayAndValue(schedule.condition, schedule.value);
 
-
-    if(schedule.value === 0){
-        //
-    }
-
-    else {
-        const result = await conditionUtil.determineScheduleDelayMillis(schedule.condition, schedule.value); // TODO error handling
-
-        schedule.timeout = currentMillis() + result[0];
-        schedule.value = result[1];
-
-        await put(schedule);
+        if (result != null) {
+            schedule.timeout = currentMillis() + result[0];
+            schedule.value = result[1];
+            await put(schedule);
+        }
     }
 }
