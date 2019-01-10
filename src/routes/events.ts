@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 const router = Router({ mergeParams: true });
 
-import * as eventHandler from '../event/event-handler';
+import * as eventHandler from '../utils/event-handler';
 
 /**
  * @api {post} /thumbs/:thumbId/event Post User Event
@@ -13,19 +13,9 @@ import * as eventHandler from '../event/event-handler';
  * @apiParamExample {json} User Action:
  * {
  *   "requestId": 12345678,
- *   "event": "TOUCH | CURE | CLEAN | EAT",
+ *   "event": "TOUCH | CURE | CLEAN | EAT | UNDO_TOUCH | UNDO_CURE | UNDO_CLEAN | UNDO_EAT",
  *   "payload": {}
  * }
- * @apiParamExample {json} App Changed Action:
- * {
- *   "requestId": 12345678,
- *   "event": "$CHANGE_APP",
- *   "payload": {
- *     "appName": "youtube"
- *   }
- * }
- *
- * @apiUse ThumbState
  */
 router.post('/', function (req: Request, res: Response, next) {
     const thumbId = req.params['thumbId'];

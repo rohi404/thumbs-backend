@@ -1,15 +1,16 @@
 import * as express from "express";
 import * as logger from "morgan";
-import createError from "http-errors";
+import * as createError from "http-errors";
 import { AddressInfo } from "net";
 
 // Routes
 import { UserController } from "./routes/users";
+import { UserThumbController } from "./routes/user-thumbs";
 import { ThumbController } from "./routes/thumbs";
 import { EventController } from "./routes/events";
 import { TestController } from "./routes/test";
-import { loadQueue } from './schedule/schedule';
-import * as Messaging from "./messaging/messaging";
+import { loadQueue } from './utils/schedule';
+import * as Messaging from "./utils/messaging";
 
 // App Settings
 const app = express();
@@ -20,9 +21,10 @@ app.use(express.urlencoded({ extended: false }));
 // Routes
 app.use("/", express.static("./apidoc"));
 app.use("/users", UserController);
-app.use("/thumbs/", ThumbController);
-app.use("/test/", TestController);
+app.use("/users/:userId/thumbs", UserThumbController);
+app.use("/thumbs/:thumbId", ThumbController);
 app.use("/thumbs/:thumbId/event", EventController);
+app.use("/test/", TestController);
 app.use(function (req, res, next) {
     next(createError(404));
 });
@@ -45,34 +47,3 @@ const server = app.listen(3456, function () {
 
     Messaging.init();
 });
-
-/**
- * @apiDefine ThumbState
- * @apiSuccessExample {json} Success:
- * HTTP/1.1 200 OK
- * {
- *   "requestId": 123456789
- *   "character": {
- *     "attires": [],
- *     "characterImageUrl": ""
- *   },
- *   "condition": {
- *     "affection": {
- *       "label": "normal",
- *       "value": 50
- *     },
- *     "health": {
- *       "label": "normal",
- *       "value": 50
- *     },
- *     "hygiene": {
- *       "label": "normal",
- *       "value": 50
- *     },
- *     "satiety": {
- *       "label": "normal",
- *       "value": 50
- *     }
- *   }
- * }
- */

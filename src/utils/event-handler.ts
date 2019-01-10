@@ -1,18 +1,8 @@
 import * as database from '../database/database';
-import * as schedule from '../schedule/schedule';
-import * as conditionUtil from '../condition/condition-util';
+import * as schedule from './schedule';
+import { getThumb } from "../database/thumbs";
 
 export const handleEvent = async function (thumbId, event) {
-    const eventName = event['event'];
-
-    if (eventName.charAt(0) === '$') {
-        // TODO system event
-    } else {
-        return await handleUserEvent(thumbId, event);
-    }
-};
-
-async function handleUserEvent(thumbId, event) {
     const conn = database.createConnection();
 
     const sql1 = `SELECT * FROM Thumbs WHERE thumb_id=${thumbId}`;
@@ -61,38 +51,5 @@ async function handleUserEvent(thumbId, event) {
         await schedule.refresh(thumbId, condition, value);
     }
 
-    const affectionValue = thumb['affection'];
-    const healthValue = thumb['health'];
-    const hygieneValue = thumb['hygiene'];
-    const satietyValue = thumb['satiety'];
-
-    const affectionLabel = await conditionUtil.valueToLabel('affection', affectionValue);
-    const healthLabel = await conditionUtil.valueToLabel('health', healthValue);
-    const hygieneLabel = await conditionUtil.valueToLabel('hygiene', hygieneValue);
-    const satietyLabel = await conditionUtil.valueToLabel('satiety', satietyValue);
-
-    return {
-        'character': {
-            'attires': [],
-            'characterImageUrl': ''
-        },
-        'condition': {
-            'affection': {
-                'label': affectionLabel,
-                'value': affectionValue
-            },
-            'health': {
-                'label': healthLabel,
-                'value': healthValue
-            },
-            'hygiene': {
-                'label': hygieneLabel,
-                'value': hygieneValue
-            },
-            'satiety': {
-                'label': satietyLabel,
-                'value': satietyValue
-            }
-        }
-    };
-}
+    return await getThumb(thumbId);
+};

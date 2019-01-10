@@ -1,5 +1,5 @@
 import * as database from '../database/database';
-import * as conditionUtil from '../condition/condition-util';
+import * as conditionUtil from './policy';
 
 const timeoutQueue = [];
 const scheduleQueue = [];

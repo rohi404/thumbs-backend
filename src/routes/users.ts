@@ -1,4 +1,4 @@
-import createError from 'http-errors';
+import * as createError from "http-errors";
 import { Router, Request, Response } from 'express';
 const router = Router({ mergeParams: true });
 
