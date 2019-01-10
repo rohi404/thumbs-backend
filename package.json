@@ -7,9 +7,9 @@
         "example": "example"
     },
     "scripts": {
-        "start": "tsc && node dist/app.js",
+        "start": "rm -rf dist && tsc && node dist/app.js",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "apidoc": "apidoc -o apidoc/ -e node_modules/"
+        "apidoc": "apidoc -i src/ -o apidoc/ -e node_modules/"
     },
     "repository": {
         "type": "git",
