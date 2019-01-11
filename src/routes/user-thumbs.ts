@@ -19,7 +19,7 @@ import {initialSchedule} from "../utils/schedule";
  *
  * @apiUse Thumb
  */
-router.post("/", function (req: Request, res: Response, next) {
+export const createThumbRoute = async function (req: Request, res: Response, next) {
     const userId = req.params["userId"];
 
     if (!req.body.hasOwnProperty("name")) {
@@ -27,15 +27,15 @@ router.post("/", function (req: Request, res: Response, next) {
     }
     const name = req.body["name"];
 
-    let thumb1 = null;
+    let thumb = await createThumb(userId, name);
+    await initialSchedule(thumb['thumbId']);
+    return thumb;
+};
 
-    createThumb(userId, name)
+router.post("/", function (req: Request, res: Response, next) {
+    createThumbRoute(req, res, next)
         .then((thumb) => {
-            thumb1 = thumb;
-            return initialSchedule(thumb['thumbId']);
-        })
-        .then(() => {
-            res.status(200).json(thumb1);
+            res.status(200).json(thumb);
         })
         .catch((err) => {
             next(err);
