@@ -24,6 +24,20 @@ export const loadQueue = async function () {
     }
 };
 
+export const initialSchedule = async function (thumbId: number) {
+    const calcDelayAndValue = await extractScheduleFunc();
+    const result = calcDelayAndValue('satiety', 50);
+    const timeout: number = currentMillis() + result[0];
+    const value: number = result[1];
+
+    await insertSchedule(thumbId, timeout, 'satiety', value);
+    await insertSchedule(thumbId, timeout, 'affection', value);
+    await insertSchedule(thumbId, timeout, 'hygiene', value);
+    await insertSchedule(thumbId, timeout, 'health', value);
+
+    await loadQueue();
+};
+
 export const update = async function (thumbId: number, condition: string, changedValue: number) {
     const index = scheduleQueue.findIndex(function (schedule: Schedule) {
         const sameThumbId = schedule.thumbId === thumbId;

@@ -1,8 +1,9 @@
 import * as createError from "http-errors";
-import { Router, Request, Response } from "express";
+import {Router, Request, Response} from "express";
 
-const router = Router({ mergeParams: true });
-import { createThumb, getThumbList } from "../database/thumbs";
+const router = Router({mergeParams: true});
+import {createThumb, getThumbList} from "../database/thumbs";
+import {initialSchedule} from "../utils/schedule";
 
 /**
  * @api {post} /users/:userId/thumbs Create Thumb
@@ -18,7 +19,7 @@ import { createThumb, getThumbList } from "../database/thumbs";
  *
  * @apiUse Thumb
  */
-router.post("/", async function (req: Request, res: Response, next) {
+router.post("/", function (req: Request, res: Response, next) {
     const userId = req.params["userId"];
 
     if (!req.body.hasOwnProperty("name")) {
@@ -26,9 +27,15 @@ router.post("/", async function (req: Request, res: Response, next) {
     }
     const name = req.body["name"];
 
+    let thumb1 = null;
+
     createThumb(userId, name)
         .then((thumb) => {
-            res.status(200).json(thumb);
+            thumb1 = thumb;
+            return initialSchedule(thumb['thumbId']);
+        })
+        .then(() => {
+            res.status(200).json(thumb1);
         })
         .catch((err) => {
             next(err);
@@ -44,7 +51,7 @@ router.post("/", async function (req: Request, res: Response, next) {
  *
  * @apiUse ThumbList
  */
-router.get("/", async function (req: Request, res: Response, next) {
+router.get("/", function (req: Request, res: Response, next) {
     const userId = req.params["userId"];
 
     getThumbList(userId)
