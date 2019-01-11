@@ -84,7 +84,7 @@ export interface ThumbCondition {
     value: number;
 }
 
-export const convert = async function (result: ThumbResult) {
+export const convertToThumb = async function (result: ThumbResult) {
     const valueToLabel = await extractLabelFunc();
 
     return {

@@ -34,7 +34,7 @@ app.use(function (err, req, res, next) {
     res.json({
         "message": err.message,
         "status": err.status,
-        "stack": err.stack
+        "stack": err.stack.split(/\n\s*/)
     });
 });
 

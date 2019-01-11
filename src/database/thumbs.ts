@@ -1,6 +1,6 @@
 import * as database from "./database";
 import * as createError from "http-errors";
-import { convert, Thumb, ThumbResult } from "../models/thumbs";
+import { convertToThumb, Thumb, ThumbResult } from "../models/thumbs";
 
 export const createThumb = async function (userId: number, name: string) {
     const conn = database.createConnection();
@@ -23,7 +23,7 @@ export const getThumbList = async function (userId: number) {
 
     let thumbList: Array<Thumb> = [];
     for (let i = 0; i < thumbResult.length; i++) {
-        thumbList.push(await convert(thumbResult[i]));
+        thumbList.push(await convertToThumb(thumbResult[i]));
     }
     return thumbList;
 };
@@ -36,7 +36,7 @@ export const getThumb = async function (thumbId: number) {
         throw createError(400, `There is no thumbs with thumbId is ${thumbId}`);
     }
 
-    return await convert(thumbResult[0]);
+    return await convertToThumb(thumbResult[0]);
 };
 
 export const modifyThumb = async function (thumbId: number, name: string | undefined) {

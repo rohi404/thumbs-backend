@@ -11,12 +11,14 @@ export const handleEvent = async function (thumbId, event) {
     const getNextValue = await extractEventHandleFunc(event["event"]);
 
     let queryList = [];
-    for (let condition in ["affection", "health", "hygiene", "satiety"]) {
-        const nowValue = thumb.condition[condition];
+    const conditionList = ["affection", "health", "hygiene", "satiety"];
+    for (let i in conditionList) {
+        const condition = conditionList[i];
+        const nowValue = thumb.condition[condition].value;
         const nextValue = getNextValue(condition, nowValue);
 
         if (nextValue != null) {
-            thumb.condition[condition] = nextValue;
+            thumb.condition[condition].value = nextValue;
             queryList.push(`${condition}=${nextValue}`);
         }
     }
@@ -31,7 +33,7 @@ export const handleEvent = async function (thumbId, event) {
     for (let i = 0; i < queryList.length; i++) {
         const condition = queryList[i].split("=")[0];
         const nextValue = queryList[i].split("=")[1];
-        await schedule.refresh(thumbId, condition, nextValue);
+        await schedule.update(thumbId, condition, nextValue);
     }
 
     return thumb;
