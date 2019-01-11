@@ -1,7 +1,8 @@
 import * as database from "../database/database";
 import { extractScheduleFunc } from "./policy";
 import Timeout = NodeJS.Timeout;
-import { convertToSchedule, Schedule, ScheduleResult } from "../models/schedule";
+import { Schedule } from "../models/schedule";
+import { insertSchedule, getAllScheduleList, deleteSchedule } from "../database/schedules";
 
 const timeoutQueue: Array<Timeout> = [];
 const scheduleQueue: Array<Schedule> = [];
@@ -11,12 +12,10 @@ function currentMillis(): number {
 }
 
 export const loadQueue = async function () {
-    const sql = "SELECT * FROM Schedules";
-
-    const results: Array<ScheduleResult> = await database.queryOne(sql);
+    const results: Array<Schedule> = await getAllScheduleList();
 
     for (let i = 0; i < results.length; i++) {
-        const schedule: Schedule = convertToSchedule(results[i]);
+        const schedule: Schedule = results[i];
         const delayMillis = schedule.timeout - currentMillis();
         const timeout: Timeout = setTimeout(timeoutFunction, delayMillis, schedule);
 
@@ -50,6 +49,7 @@ export const update = async function (thumbId: number, condition: string, change
         timeoutQueue.splice(index, 1);
 
         clearTimeout(timeout);
+        await deleteSchedule(schedule.thumbId, schedule.condition)
     }
 
     const calcDelayAndValue = await extractScheduleFunc();
@@ -63,10 +63,7 @@ export const update = async function (thumbId: number, condition: string, change
 };
 
 export const put = async function (schedule: Schedule) {
-    const sql =
-        `INSERT INTO Schedules (thumb_id, timeout, \`condition\`, \`value\`) ` +
-        `VALUES (${schedule.thumbId}, ${schedule.timeout}, '${schedule.condition}', ${schedule.value})`;
-    await database.queryOne(sql);
+    await insertSchedule(schedule.thumbId, schedule.timeout, schedule.condition, schedule.value)
 
     const delayMillis = schedule.timeout - currentMillis();
     const timeout = setTimeout(timeoutFunction, delayMillis, schedule);
@@ -76,8 +73,7 @@ export const put = async function (schedule: Schedule) {
 };
 
 async function timeoutFunction(schedule: Schedule) {
-    const sql1 = `DELETE FROM Schedules WHERE thumb_id = ${schedule.thumbId} && \`condition\` LIKE '${schedule.condition}'`;
-    await database.queryOne(sql1);
+    await deleteSchedule(schedule.thumbId, schedule.condition);
 
     const sql2 = `UPDATE Thumbs SET ${schedule.condition}=${schedule.value} WHERE thumb_id=${schedule.thumbId}`;
     await database.queryOne(sql2);
@@ -93,5 +89,9 @@ async function timeoutFunction(schedule: Schedule) {
             schedule.value = result[1];
             await put(schedule);
         }
+    }
+
+    else {
+
     }
 }
