@@ -9,7 +9,7 @@ export interface Schedule {
     thumbId: number;
     timeout: number;
     condition: string;
-    value: number;
+    value: string;
 }
 
 export const convertToSchedule = function(result: ScheduleResult): Schedule {
@@ -17,6 +17,6 @@ export const convertToSchedule = function(result: ScheduleResult): Schedule {
         thumbId: parseInt(result['thumb_id']),
         timeout: parseInt(result['timeout']),
         condition: result['condition'],
-        value: parseInt(result['value']),
+        value: result['value'],
     }
 };

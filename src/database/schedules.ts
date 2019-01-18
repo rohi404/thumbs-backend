@@ -2,12 +2,12 @@ import * as database from "./database";
 import * as createError from "http-errors";
 import { convertToSchedule, Schedule, ScheduleResult } from "../models/schedule";
 
-export const insertSchedule = async function (thumbId: number, timeout: number, condition: string, value: number) {
+export const insertSchedule = async function (thumbId: number, timeout: number, condition: string, value: string) {
     const conn = database.createConnection();
 
     const sql =
         `INSERT INTO Schedules (thumb_id, timeout, \`condition\`, \`value\`) ` +
-        `VALUES (${thumbId}, ${timeout}, '${condition}', ${value})`;
+        `VALUES (${thumbId}, ${timeout}, '${condition}', '${value}')`;
     const result = await database.query(conn, sql);
 
     database.endConnection(conn);

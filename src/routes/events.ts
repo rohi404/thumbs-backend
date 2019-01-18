@@ -44,9 +44,8 @@ import * as eventHandler from '../utils/event-handler';
  * }
  */
 router.post('/', function (req: Request, res: Response, next) {
-    const thumbId = req.params['thumbId'];
+    const thumbId = parseInt(req.params['thumbId']);
     const event = req.body;
-
     eventHandler.handleEvent(thumbId, event).then((payload) => {
         payload['requestId'] = req.body['requestId'];
         res.status(200).json(payload);
