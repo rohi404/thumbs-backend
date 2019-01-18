@@ -33,7 +33,7 @@ export const getThumb = async function (thumbId: number) {
     const thumbResult: Array<ThumbResult> = await database.queryOne(sql);
 
     if (thumbResult.length == 0) {
-        throw createError(400, `There is no thumbs with thumbId is ${thumbId}`);
+        throw createError(404, `There is no thumbs with thumbId is ${thumbId}`);
     }
 
     return await convertToThumb(thumbResult[0]);
