@@ -22,6 +22,23 @@ export const extractLabelFunc = async function () {
     };
 };
 
+export const extractImageFunc = async function () {
+    const sql = `SELECT * FROM Images`;
+    const policies = await database.queryOne(sql);
+
+    return (condition: string, label: string) => {
+        for (let i = 0; i < policies.length; i++) {
+            const policy = policies[i];
+
+            if (condition == policy["conditions"] && label == policy["label"]) {
+                return policy["image"];
+            }
+        }
+
+        return null;
+    };
+};
+
 export const extractScheduleFunc = async function () {
     const sql = `SELECT * FROM PolicyConditionDecrement`;
     const policies = await database.queryOne(sql);

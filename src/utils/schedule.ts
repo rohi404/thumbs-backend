@@ -1,5 +1,5 @@
 import * as database from "../database/database";
-import { extractScheduleFunc } from "./policy";
+import { extractScheduleFunc, extractImageFunc } from "./policy";
 import Timeout = NodeJS.Timeout;
 import { Schedule } from "../models/schedule";
 import { insertSchedule, getAllScheduleList, deleteSchedule } from "../database/schedules";
@@ -114,6 +114,11 @@ async function timeoutFunction(schedule: Schedule) {
     await database.queryOne(sql);
 
     if(schedule.condition === 'disease'){
+        const calcDiseaseValue = await extractImageFunc();
+        const result = calcDiseaseValue(schedule.value, null);
+        const sql = `UPDATE Thumbs SET image ='${result}' WHERE thumb_id=${schedule.thumbId}`;
+        await database.queryOne(sql);
+
         schedule.condition = 'health';
         schedule.value = '100';
     }
