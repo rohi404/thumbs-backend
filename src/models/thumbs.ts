@@ -8,7 +8,8 @@ export interface ThumbResult {
     affection: number,
     hygiene: number,
     health: number,
-    disease: string
+    disease: string,
+    image: string
 }
 
 /**
@@ -69,6 +70,8 @@ export interface ThumbResult {
  */
 export interface Thumb {
     thumbId: number,
+    image: string,
+    disease: string,
     condition: ThumbConditionList
 }
 
@@ -90,6 +93,8 @@ export const convertToThumb = async function (result: ThumbResult) {
     return {
         thumbId: result["thumb_id"],
         name: result["name"],
+        image: result["image"],
+        disease: result["disease"],
         condition: {
             affection: {
                 label: valueToLabel("affection", result["affection"]),
