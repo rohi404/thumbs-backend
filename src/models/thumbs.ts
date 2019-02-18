@@ -19,6 +19,8 @@ export interface ThumbResult {
  * {
  *     "thumbId": 1,
  *     "name": "귀요미",
+ *     "image": "https://s3.ap-northeast-2.amazonaws.com/rohi-thumbs/image-xxhdpi/gloomy.png",
+ *     "disease": "rash"
  *     "condition": {
  *         "affection": {
  *             "label": "normal",
@@ -29,7 +31,7 @@ export interface ThumbResult {
  *             "value": 0
  *         },
  *         "hygiene": {
- *             "label": "high",
+ *             "label": "normal",
  *             "value": 70
  *         },
  *         "satiety": {
@@ -47,6 +49,8 @@ export interface ThumbResult {
  *     {
  *         "thumbId": 1,
  *         "name": "귀요미",
+ *         "image": "https://s3.ap-northeast-2.amazonaws.com/rohi-thumbs/image-xxhdpi/normal.png",
+ *         "disease": "rash"
  *         "condition": {
  *             "affection": {
  *                 "label": "normal",

@@ -23,6 +23,8 @@ import * as eventHandler from '../utils/event-handler';
  *     "requestId": 12345678,
  *     "thumbId": 1,
  *     "name": "귀요미",
+ *     "image": "https://s3.ap-northeast-2.amazonaws.com/rohi-thumbs/image-xxhdpi/gloomy.png",
+ *     "disease": "rash",
  *     "condition": {
  *         "affection": {
  *             "label": "normal",
@@ -33,7 +35,7 @@ import * as eventHandler from '../utils/event-handler';
  *             "value": 0
  *         },
  *         "hygiene": {
- *             "label": "high",
+ *             "label": "normal",
  *             "value": 70
  *         },
  *         "satiety": {

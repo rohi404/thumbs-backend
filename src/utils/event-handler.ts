@@ -39,10 +39,9 @@ export const handleEvent = async function (thumbId, event) {
         await schedule.update(thumbId, condition, parseInt(nextValue));
     }
 
-    const editconditionList = ["affection", "hygiene", "satiety"];
     let lowList = {};
-    for(let i in editconditionList) {
-        const condition = editconditionList[i];
+    for(let i in conditionList) {
+        const condition = conditionList[i];
         if(thumb.condition[condition].label === 'low'){
             lowList[condition] = thumb.condition[condition].value;
         }
